@@ -26,7 +26,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         Object responseBody = null;
 
         try {
-            // Roteador para os diferentes endpoints da API BattleSnake
+            //Roteador para os diferentes endpoints da API BattleSnake
             switch (path) {
                 case "/":
                     // Informações da sua cobra
