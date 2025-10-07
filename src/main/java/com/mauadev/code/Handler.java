@@ -10,9 +10,12 @@ import com.mauadev.code.entities.Coordinate;
 import com.mauadev.code.entities.GameState;
 import com.mauadev.code.entities.Snake;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -141,12 +144,85 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
 
         // Lógica do movimento (exemplo simples)
         // Agora que você tem o estado do jogo, pode implementar uma lógica mais inteligente aqui.
-
         Map<String, String> move = new HashMap<>();
-        move.put("move", "left");
-        move.put("shout", "Estou indo para esquerda!"); // Opcional
+        List<Snake> snakes = board.getSnakes();
+        Coordinate cabeca = you.getHead();
+        Snake inimigo = board.getSnakes().stream()
+            .filter(s -> !s.getId().equals(you.getId()))
+            .findFirst()
+            .orElse(null);
+        if (snakes == null){
+            snakes = Collections.emptyList();
+        }
+        
+        String direcao = null;
+        String[] possiveisMoves = {"up", "down", "left", "right"};
+        List<Coordinate> corpo = you.getBody();
+
+        BiPredicate<String, Coordinate> valido = (mov, head) -> {
+        int nx = head.getX();
+        int ny = head.getY();
+    
+        switch (mov) {
+            case "up": ny += 1; break;
+            case "down": ny -= 1; break;
+            case "left": nx -= 1; break;
+            case "right": nx += 1; break;
+        }
+
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()) return false;
+
+        for (Coordinate c : corpo) if (c.getX() == nx && c.getY() == ny) return false;
+
+        if (inimigo != null) {
+            for (Coordinate c : inimigo.getBody()) if (c.getX() == nx && c.getY() == ny) return false;
+        }
+
+        return true;
+        };
+
+        if (inimigo != null && inimigo.getHealth() > you.getHealth() && !board.getFood().isEmpty()) {
+        Coordinate comida = board.getFood().get(0);
+
+        List<String> prioridade = new ArrayList<>();
+        if (cabeca.getX() < comida.getX()){
+            prioridade.add("right");
+        }
+        if (cabeca.getX() > comida.getX()){
+            prioridade.add("left");
+        }
+        if (cabeca.getY() < comida.getY()){
+            prioridade.add("up");
+        }
+        if (cabeca.getY() > comida.getY()){
+            prioridade.add("down");
+        }
+        for (String m : prioridade) {
+            if (valido.test(m, cabeca)) {
+                direcao = m;
+                break;
+            }
+        }
+        if (direcao == null) {
+            for (String m : possiveisMoves) {
+                if (valido.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
+        } else {
+            for (String m : possiveisMoves) {
+                if (valido.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
+        move.put("move", direcao != null ? direcao : "up");
+        move.put("shout", "Movimento seguro baseado na sua vida e do inimigo");
         return move;
-    }
+}
 
     /**
      * Chamado no final de cada jogo. Não precisa retornar nada.
