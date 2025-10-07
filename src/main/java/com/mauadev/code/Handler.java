@@ -143,9 +143,8 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         // Agora que você tem o estado do jogo, pode implementar uma lógica mais inteligente aqui.
 
         Map<String, String> move = new HashMap<>();
-        move.put("move", "up");
-        move.put("shout", "Estou indo para cima!"); // Opcional
-
+        move.put("move", "left");
+        move.put("shout", "Estou indo para esquerda!"); // Opcional
         return move;
     }
 
