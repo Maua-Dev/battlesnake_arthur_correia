@@ -183,7 +183,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         return true;
         };
 
-        if (inimigo != null && inimigo.getHealth() > you.getHealth() && !board.getFood().isEmpty()) {
+        if (inimigo != null && inimigo.getHealth() >= you.getHealth() && !board.getFood().isEmpty()) {
         Coordinate comida = board.getFood().get(0);
 
         List<String> prioridade = new ArrayList<>();
