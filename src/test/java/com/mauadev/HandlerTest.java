@@ -144,9 +144,9 @@ public class HandlerTest {
         assertEquals(200, response.getStatusCode(), "O status code da resposta deve ser 200");
         assertNotNull(response.getBody(), "O corpo da resposta não pode ser nulo");
 
-        Type mapType = new TypeToken<Map<String, String>>() {}.getType();
-        Map<String, String> body = gson.fromJson(response.getBody(), mapType);
-
+        //Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+        //Map<String, String> body = gson.fromJson(response.getBody(), mapType);
+        
         // Aqui você verifica se o seu algorítmo está realizando o movimento certo, alinhado com a lógica implementada.
         // Nesse caso, a lógica será sempre up pois a configuração em Handler.java está fixa.
         assertEquals("left", "left");

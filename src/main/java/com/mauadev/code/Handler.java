@@ -245,7 +245,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 break;
             }
         }
-        if (direcao == null || !valido.test(direcao, cabeca)) {
+        if (direcao == null || !valido2.test(direcao, cabeca)) {
             for (String m : prioridade) {
                 if (valido2.test(m, cabeca)) {
                     direcao = m;
