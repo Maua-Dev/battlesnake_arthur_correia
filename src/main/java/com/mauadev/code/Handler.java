@@ -186,7 +186,8 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         return false;
         }
         }
-
+        return true;
+        };
         Coordinate comida = board.getFood().stream()
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
         .orElse(null);
