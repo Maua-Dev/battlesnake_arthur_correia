@@ -278,14 +278,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 break;
             }
         }
-        if (direcao == null) {
-            for (String m : possiveisMoves) {
-                if (valido.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
         if (!valido.test(direcao, cabeca)) {
             for (String m : prioridade) {
                 if (valido2.test(m, cabeca)) {
@@ -297,6 +289,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         if (!valido2.test(direcao, cabeca)) {
             for (String m : prioridade) {
                 if (valido3.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
+        if (direcao == null) {
+            for (String m : possiveisMoves) {
+                if (valido.test(m, cabeca)) {
                     direcao = m;
                     break;
                 }
