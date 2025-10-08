@@ -173,14 +173,16 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             if (s.getId().equals(you.getId())){
                 continue;
             }
+            Coordinate h = s.getHead();
+            double dx = nx - h.getX();
+            double dy = ny - h.getY();
+            if (dx*dx + dy*dy <= 2) {
+                break;
+            }
             for (Coordinate c : s.getBody()){
                 if (nx == c.getX() && ny == c.getY()){
                     return false;
                 }
-            }
-            Coordinate h = s.getHead();
-            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
-                return false;
             }
         }
         return true;
@@ -208,14 +210,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             if (s.getId().equals(you.getId())){
                 continue;
             }
+            Coordinate h = s.getHead();
+            if (nx == h.getX() && ny == h.getY()) {
+                return false;
+            }
             for (Coordinate c : s.getBody()){
                 if (nx == c.getX() && ny == c.getY()){
                     return false;
                 }
-            }
-            Coordinate h = s.getHead();
-            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
-                return true;
             }
         }
         return true;
