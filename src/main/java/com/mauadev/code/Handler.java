@@ -183,8 +183,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         return true;
         };
 
-        Coordinate comida = board.getFood().get(0);
-
+        Coordinate comida = board.getFood().stream()
+        .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+        .orElse(null);
         List<String> prioridade = new ArrayList<>();
         if (cabeca.getX() < comida.getX()){
             prioridade.add("right");
@@ -213,7 +214,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             }
         }
         move.put("move", direcao);
-        move.put("shout", "Movimento seguro na distancia do inimigo+anticolisão");
+        move.put("shout", "Movimento seguro na distancia do inimigo + anticolisão + comida_próxima");
         return move;
 }
 
