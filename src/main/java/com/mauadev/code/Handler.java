@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.function.BiPredicate;
 
 public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -167,15 +165,31 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
             return false;
         }
-        boolean[][] bloqueado = new boolean[board.getWidth()][board.getHeight()];
-        for (int i = 1; i < corpo.size(); i++) bloqueado[corpo.get(i).getX()][corpo.get(i).getY()] = true;
-        for (Snake s : board.getSnakes()) {
-            if (!s.getId().equals(you.getId())) {
-                for (Coordinate c : s.getBody()) bloqueado[c.getX()][c.getY()] = true;
+        for (Coordinate c : corpo) {
+            int dx = Math.abs(nx - c.getX());
+            int dy = Math.abs(ny - c.getY());
+            if (dx <= 0 && dy <= 0){
+                return false;
             }
         }
-        int area = floodFillCount(nx, ny, bloqueado, board);
-        return area >= 2;
+        for (Snake s : board.getSnakes()) {
+            if (!s.getId().equals(you.getId())) {
+            for (Coordinate c : s.getBody()) {
+                int dx = Math.abs(nx - c.getX());
+                int dy = Math.abs(ny - c.getY());
+                if (dx <= 0 && dy <= 0){
+                    return false;
+                }
+            }
+            Coordinate headInimigo = s.getHead();
+            int dx = Math.abs(nx - headInimigo.getX());
+            int dy = Math.abs(ny - headInimigo.getY());
+            if (dx <= 1 && dy <= 1){
+                return false;
+            }
+        }
+        }
+        return true;
         };
         Coordinate comida = board.getFood().stream()
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
@@ -211,33 +225,5 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
     private void handleEnd(APIGatewayProxyRequestEvent request, Context context) {
         // Você pode analisar a requisição para saber se venceu ou perdeu.
         context.getLogger().log("Game Ended!");
-    }
-    class Pos {
-        int x, y;
-        Pos(int x, int y)
-        { this.x = x; this.y = y; }
-    }
-    public int floodFillCount(int x, int y, boolean[][] bloqueado, Board board) {
-        int count = 0;
-        boolean[][] visitado = new boolean[bloqueado.length][bloqueado[0].length];
-        Queue<Pos> fila = new LinkedList<>();
-        fila.add(new Pos(x, y));
-
-        while (!fila.isEmpty()) {
-        Pos c = fila.poll();
-        int cx = c.x;
-        int cy = c.y;
-
-        if (cx < 0 || cx >= board.getWidth() || cy < 0 || cy >= board.getHeight()) continue;
-        if (bloqueado[cx][cy] || visitado[cx][cy]) continue;
-        visitado[cx][cy] = true;
-        count++;
-
-        fila.add(new Pos(cx + 1, cy));
-        fila.add(new Pos(cx - 1, cy));
-        fila.add(new Pos(cx, cy + 1));
-        fila.add(new Pos(cx, cy - 1));
-        }
-        return count;
     }
 }
