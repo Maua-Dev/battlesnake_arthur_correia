@@ -248,14 +248,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             }
         }
         if (direcao == null) {
-            for (String m : prioridade) {
-                if (valido2.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
-        if (direcao == null) {
             for (String m : semprioridade) {
                 if (valido2.test(m, cabeca)) {
                     direcao = m;
