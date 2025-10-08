@@ -201,6 +201,55 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "left": nx -= 1; break;
             case "right": nx += 1; break;
         }
+        if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
+            return false;
+        }
+        for (Coordinate c : corpo) {
+            int dx = Math.abs(nx - c.getX());
+            int dy = Math.abs(ny - c.getY());
+            if (dx <= 0 && dy <= 0){
+                return false;
+            }
+        }
+        for (Snake s : board.getSnakes()) {
+            if (!s.getId().equals(you.getId())) {
+                for (Coordinate c : s.getBody()) {
+                    int dx = Math.abs(nx - c.getX());
+                    int dy = Math.abs(ny - c.getY());
+                    if (dx <= 0 && dy <= 0){
+                        return false;
+                    }
+                }
+                Coordinate headInimigo = s.getHead();
+                int dx = Math.abs(nx - headInimigo.getX());
+                int dy = Math.abs(ny - headInimigo.getY());
+                if (dx <= 0 && dy <= 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+        };
+        BiPredicate<String, Coordinate> valido3 = (mov, head) -> {
+        int nx = head.getX();
+        int ny = head.getY();
+    
+        switch (mov) {
+            case "up": ny += 1; break;
+            case "down": ny -= 1; break;
+            case "left": nx -= 1; break;
+            case "right": nx += 1; break;
+        }
+        if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
+            return false;
+        }
+        for (Coordinate c : corpo) {
+            int dx = Math.abs(nx - c.getX());
+            int dy = Math.abs(ny - c.getY());
+            if (dx <= 0 && dy <= 0){
+                return false;
+            }
+        }
         return true;
         };
         Coordinate comida = board.getFood().stream()
@@ -227,9 +276,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
         }
-        if (!valido.test(direcao, cabeca)) {
+        if (!valido2.test(direcao, cabeca)) {
             for (String m : prioridade) {
-                if (valido2.test(m, cabeca)) {
+                if (valido3.test(m, cabeca)) {
                     direcao = m;
                     break;
                 }
