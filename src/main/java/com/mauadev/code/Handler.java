@@ -162,7 +162,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "right": nx += 1; break;
         }
 
-        if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
         for (Coordinate c : corpo) {
@@ -201,7 +201,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "left": nx -= 1; break;
             case "right": nx += 1; break;
         }
-        if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
         for (Coordinate c : corpo) {
@@ -240,7 +240,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "left": nx -= 1; break;
             case "right": nx += 1; break;
         }
-        if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
         for (Snake s : board.getSnakes()) {
@@ -278,7 +278,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 break;
             }
         }
-        if (!valido.test(direcao, cabeca)) {
+        if (direcao == null || !valido.test(direcao, cabeca)) {
             for (String m : prioridade) {
                 if (valido2.test(m, cabeca)) {
                     direcao = m;
@@ -286,7 +286,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
         }
-        if (!valido2.test(direcao, cabeca)) {
+        if (direcao == null || !valido2.test(direcao, cabeca)) {
             for (String m : prioridade) {
                 if (valido3.test(m, cabeca)) {
                     direcao = m;
