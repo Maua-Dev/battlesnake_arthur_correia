@@ -214,8 +214,8 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
             Coordinate h = s.getHead();
-            if (nx == h.getX() && ny == h.getY()){
-                return false;
+            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
+                return true;
             }
         }
         return true;
@@ -256,6 +256,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                     break;
                 }
             }
+        }
+        if (direcao == null) {
+            direcao = "left";
         }
         move.put("move", direcao);
         return move;
