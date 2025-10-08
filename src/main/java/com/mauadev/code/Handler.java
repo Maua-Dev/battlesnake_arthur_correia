@@ -11,7 +11,6 @@ import com.mauadev.code.entities.GameState;
 import com.mauadev.code.entities.Snake;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -227,25 +226,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         List<String> prioridade = new ArrayList<>();
         List<String> semprioridade = new ArrayList<>();
         if (comida != null) {
-            int distAtual = Math.abs(cabeca.getX() - comida.getX()) + Math.abs(cabeca.getY() - comida.getY());
-
-            Map<String, Coordinate> futuros = new HashMap<>();
-            futuros.put("up", new Coordinate(cabeca.getX(), cabeca.getY() + 1));
-            futuros.put("down", new Coordinate(cabeca.getX(), cabeca.getY() - 1));
-            futuros.put("left", new Coordinate(cabeca.getX() - 1, cabeca.getY()));
-            futuros.put("right", new Coordinate(cabeca.getX() + 1, cabeca.getY()));
-
-            for (Map.Entry<String, Coordinate> entry : futuros.entrySet()) {
-                String k = entry.getKey();
-                Coordinate futuro = entry.getValue();
-                int distFut = Math.abs(futuro.getX() - comida.getX()) + Math.abs(futuro.getY() - comida.getY());
-
-                if (distFut < distAtual) {
-                    prioridade.add(k);
-                } else if (distFut > distAtual) {
-                    semprioridade.add(k);
-                }
-            }
+            if (cabeca.getX() < comida.getX()) prioridade.add("right");
+            if (cabeca.getX() > comida.getX()) prioridade.add("left");
+            if (cabeca.getY() < comida.getY()) prioridade.add("up");
+            if (cabeca.getY() > comida.getY()) prioridade.add("down");
+            if (cabeca.getX() < comida.getX()) semprioridade.add("left");
+            if (cabeca.getX() > comida.getX()) semprioridade.add("right");
+            if (cabeca.getY() < comida.getY()) semprioridade.add("down");
+            if (cabeca.getY() > comida.getY()) semprioridade.add("up");
         }
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
