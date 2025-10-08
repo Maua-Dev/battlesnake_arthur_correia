@@ -12,6 +12,7 @@ import com.mauadev.code.entities.Snake;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,13 +149,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         List<Snake> snakes = board.getSnakes();
         Coordinate cabeca = you.getHead();
         Snake inimigo = board.getSnakes().stream()
-            .filter(s -> !s.getId().equals(you.getId()))
-            .findFirst()
-            .orElse(null);
+        .filter(s -> !s.getId().equals(you.getId()))
+        .min(Comparator.comparingInt(s -> Math.abs(s.getHead().getX() - cabeca.getX())
+        + Math.abs(s.getHead().getY() - cabeca.getY())))
+        .orElse(null);
         if (snakes == null){
             snakes = Collections.emptyList();
         }
-        
+
         String direcao = null;
         String[] possiveisMoves = {"up", "down", "left", "right"};
         List<Coordinate> corpo = you.getBody();
