@@ -243,11 +243,21 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         if (nx < 0 || nx >= board.getWidth() - 0 || ny < 0 || ny >= board.getHeight() - 0){
             return false;
         }
-        for (Coordinate c : corpo) {
-            int dx = Math.abs(nx - c.getX());
-            int dy = Math.abs(ny - c.getY());
-            if (dx <= 0 && dy <= 0){
-                return false;
+        for (Snake s : board.getSnakes()) {
+            if (!s.getId().equals(you.getId())) {
+                for (Coordinate c : s.getBody()) {
+                    int dx = Math.abs(nx - c.getX());
+                    int dy = Math.abs(ny - c.getY());
+                    if (dx <= 0 && dy <= 0){
+                        return false;
+                    }
+                }
+                Coordinate headInimigo = s.getHead();
+                int dx = Math.abs(nx - headInimigo.getX());
+                int dy = Math.abs(ny - headInimigo.getY());
+                if (dx <= 0 && dy <= 0){
+                    return true;
+                }
             }
         }
         return true;
