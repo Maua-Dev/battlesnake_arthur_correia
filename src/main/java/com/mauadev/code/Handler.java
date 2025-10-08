@@ -179,7 +179,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 Coordinate h = s.getHead();
                 int dx = Math.abs(nx - h.getX());
                 int dy = Math.abs(ny - h.getY());
-                if (dx*dy <= 1){
+                if (dx*dy <= 2){
                     return false;
                 }
             }
@@ -211,6 +211,47 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                         return false;
                     }
                 }
+                Coordinate h = s.getHead();
+                int dx = Math.abs(nx - h.getX());
+                int dy = Math.abs(ny - h.getY());
+                if (dx*dy <= 1){
+                    return false;
+                }
+            }
+        }
+        return true;
+        };
+        BiPredicate<String, Coordinate> valido3 = (mov, head) -> {
+        int nx = head.getX();
+        int ny = head.getY();
+    
+        switch (mov) {
+            case "up": ny++; break;
+            case "down": ny--; break;
+            case "left": nx--; break;
+            case "right": nx++; break;
+        }
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
+            return false;
+        }
+        for (Coordinate c : corpo) {
+            if (nx == c.getX() && ny == c.getY()){
+                return false;
+            }
+        }
+        for (Snake s : board.getSnakes()) {
+            if (!s.getId().equals(you.getId())) {
+                for (Coordinate c : s.getBody()) {
+                    if (nx == c.getX() && ny == c.getY()){
+                        return false;
+                    }
+                }
+                Coordinate h = s.getHead();
+                int dx = Math.abs(nx - h.getX());
+                int dy = Math.abs(ny - h.getY());
+                if (dx*dy <= 0){
+                    return false;
+                }
             }
         }
         return true;
@@ -238,27 +279,43 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         }
         if (direcao == null) {
             for (String m : prioridade) {
-            if (valido2.test(m, cabeca)) {
-                direcao = m;
-                break;
+                if (valido2.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
             }
+        }
+        if (direcao == null) {
+            for (String m : prioridade) {
+                if (valido3.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
+        if (direcao == null) {
+            for (String m : semprioridade) {
+                if (valido.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
+        if (direcao == null) {
+            for (String m : semprioridade) {
+                if (valido2.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
         }
         }
         if (direcao == null) {
             for (String m : semprioridade) {
-            if (valido.test(m, cabeca)) {
-                direcao = m;
-                break;
+                if (valido3.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
             }
-        }
-        }
-        if (direcao == null) {
-            for (String m : semprioridade) {
-            if (valido2.test(m, cabeca)) {
-                direcao = m;
-                break;
-            }
-        }
         }
         move.put("move", direcao);
         return move;
