@@ -181,6 +181,12 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                     return false;
                 }
             }
+            Coordinate headInimigo = s.getHead();
+            int dx = Math.abs(nx - headInimigo.getX());
+            int dy = Math.abs(ny - headInimigo.getY());
+            if (dx <= 1 && dy <= 1){
+                return true;
+            }
         }
         }
         return true;
