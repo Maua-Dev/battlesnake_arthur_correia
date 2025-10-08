@@ -215,7 +215,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
             Coordinate h = s.getHead();
-            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
+            if (Math.abs(nx - h.getX()) <= 0 && Math.abs(ny - h.getY()) <= 0){
                 return false;
             }
         }
