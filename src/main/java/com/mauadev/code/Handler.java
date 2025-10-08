@@ -260,6 +260,11 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
         }
+        if (direcao == null){
+            for (String m : semprioridade) {
+                direcao = m;
+            }
+        }
         move.put("move", direcao);
         return move;
     }
