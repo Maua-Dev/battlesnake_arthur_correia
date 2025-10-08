@@ -183,7 +183,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         return true;
         };
 
-        if (inimigo != null && inimigo.getHealth() >= you.getHealth() && !board.getFood().isEmpty()) {
         Coordinate comida = board.getFood().get(0);
 
         List<String> prioridade = new ArrayList<>();
@@ -213,16 +212,8 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
         }
-        } else {
-            for (String m : possiveisMoves) {
-                if (valido.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
-        move.put("move", direcao != null ? direcao : "up");
-        move.put("shout", "Movimento seguro baseado na sua vida e do inimigo");
+        move.put("move", direcao);
+        move.put("shout", "Movimento seguro na distancia do inimigo+anticolisão");
         return move;
 }
 
