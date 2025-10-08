@@ -175,7 +175,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             }
         }
         int area = floodFillCount(nx, ny, bloqueado, board);
-        return area >= 3;
+        return area >= 2;
         };
         Coordinate comida = board.getFood().stream()
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
