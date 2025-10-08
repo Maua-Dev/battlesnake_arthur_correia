@@ -166,11 +166,11 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             return false;
         }
         for (Coordinate c : corpo) {
-        int dx = Math.abs(nx - c.getX());
-        int dy = Math.abs(ny - c.getY());
-        if (dx <= 1 && dy <= 1){
-        return false;
-        }
+            int dx = Math.abs(nx - c.getX());
+            int dy = Math.abs(ny - c.getY());
+            if (dx <= 1 && dy <= 1){
+                return false;
+            }
         }
         for (Snake s : board.getSnakes()) {
             if (!s.getId().equals(you.getId())) {
