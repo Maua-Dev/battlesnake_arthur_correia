@@ -155,35 +155,31 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         int ny = head.getY();
     
         switch (mov) {
-            case "up": ny += 1; break;
-            case "down": ny -= 1; break;
-            case "left": nx -= 1; break;
-            case "right": nx += 1; break;
+            case "up": ny++; break;
+            case "down": ny--; break;
+            case "left": nx--; break;
+            case "right": nx++; break;
         }
 
         if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
         for (Coordinate c : corpo) {
-            int dx = Math.abs(nx - c.getX());
-            int dy = Math.abs(ny - c.getY());
-            if (dx <= 0 && dy <= 0){
+            if (nx == c.getX() && ny == c.getY()){
                 return false;
             }
         }
         for (Snake s : board.getSnakes()) {
             if (!s.getId().equals(you.getId())) {
                 for (Coordinate c : s.getBody()) {
-                    int dx = Math.abs(nx - c.getX());
-                    int dy = Math.abs(ny - c.getY());
-                    if (dx <= 0 && dy <= 0){
+                    if (nx == c.getX() && ny == c.getY()){
                         return false;
                     }
                 }
-                Coordinate headInimigo = s.getHead();
-                int dx = Math.abs(nx - headInimigo.getX());
-                int dy = Math.abs(ny - headInimigo.getY());
-                if (dx <= 1 || dy <= 1){
+                Coordinate h = s.getHead();
+                int dx = Math.abs(nx - h.getX());
+                int dy = Math.abs(ny - h.getY());
+                if (dx <= 1 && dy <= 1){
                     return false;
                 }
             }
@@ -195,35 +191,25 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         int ny = head.getY();
     
         switch (mov) {
-            case "up": ny += 1; break;
-            case "down": ny -= 1; break;
-            case "left": nx -= 1; break;
-            case "right": nx += 1; break;
+            case "up": ny++; break;
+            case "down": ny--; break;
+            case "left": nx--; break;
+            case "right": nx++; break;
         }
         if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
         for (Coordinate c : corpo) {
-            int dx = Math.abs(nx - c.getX());
-            int dy = Math.abs(ny - c.getY());
-            if (dx <= 0 && dy <= 0){
+            if (nx == c.getX() && ny == c.getY()){
                 return false;
             }
         }
         for (Snake s : board.getSnakes()) {
             if (!s.getId().equals(you.getId())) {
                 for (Coordinate c : s.getBody()) {
-                    int dx = Math.abs(nx - c.getX());
-                    int dy = Math.abs(ny - c.getY());
-                    if (dx <= 0 && dy <= 0){
+                    if (nx == c.getX() && ny == c.getY()){
                         return false;
                     }
-                }
-                Coordinate headInimigo = s.getHead();
-                int dx = Math.abs(nx - headInimigo.getX());
-                int dy = Math.abs(ny - headInimigo.getY());
-                if (dx <= 0 && dy <= 0){
-                    break;
                 }
             }
         }
