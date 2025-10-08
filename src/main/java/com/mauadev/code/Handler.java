@@ -219,6 +219,11 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
         .orElse(null);
         List<String> prioridade = new ArrayList<>();
+        List<String> semprioridade = new ArrayList<>();
+        semprioridade.add("up");
+        semprioridade.add("down");
+        semprioridade.add("left");
+        semprioridade.add("right");
         if (comida != null) {
             if (cabeca.getX() < comida.getX()) prioridade.add("right");
             if (cabeca.getX() > comida.getX()) prioridade.add("left");
@@ -233,6 +238,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         }
         if (direcao == null) {
             for (String m : prioridade) {
+            if (valido2.test(m, cabeca)) {
+                direcao = m;
+                break;
+            }
+        }
+        }
+        if (direcao == null) {
+            for (String m : semprioridade) {
             if (valido2.test(m, cabeca)) {
                 direcao = m;
                 break;
