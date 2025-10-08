@@ -168,16 +168,24 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "right": nx += 1; break;
         }
 
-        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()) return false;
-
-        for (Coordinate c : corpo) if (c.getX() == nx && c.getY() == ny) return false;
-
-        if (inimigo != null) {
-            for (Coordinate c : inimigo.getBody()) if (c.getX() == nx && c.getY() == ny) return false;
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
+            return false;
         }
-
-        return true;
-        };
+        for (Coordinate c : corpo) if (c.getX() == nx && c.getY() == ny){
+            return false;
+        }
+        if (inimigo != null) {
+        for (Coordinate c : inimigo.getBody()){
+            if (c.getX() == nx && c.getY() == ny){
+                return false;
+            }
+        }
+        int dx = Math.abs(nx - inimigo.getHead().getX());
+        int dy = Math.abs(ny - inimigo.getHead().getY());
+        if (dx + dy <= 1){
+        return false;
+        }
+        }
 
         Coordinate comida = board.getFood().stream()
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
