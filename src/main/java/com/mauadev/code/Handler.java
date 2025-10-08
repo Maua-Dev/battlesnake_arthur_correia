@@ -228,11 +228,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         List<String> semprioridade = new ArrayList<>();
         if (comida != null) {
             if (cabeca.getY() > comida.getY()) prioridade.add("down");
+            if (cabeca.getY() > comida.getY()) semprioridade.add("up");
             if (cabeca.getX() < comida.getX()) prioridade.add("right");
+            if (cabeca.getX() < comida.getX()) semprioridade.add("left");
             if (cabeca.getX() > comida.getX()) prioridade.add("left");
+            if (cabeca.getX() > comida.getX()) semprioridade.add("right");
             if (cabeca.getY() < comida.getY()) prioridade.add("up");
+            if (cabeca.getY() < comida.getY()) prioridade.add("down");
         }
-        semprioridade.addAll(Arrays.asList("up","down","right","left"));
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
                 direcao = m;
