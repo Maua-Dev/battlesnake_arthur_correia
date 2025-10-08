@@ -153,7 +153,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         BiPredicate<String, Coordinate> valido = (mov, head) -> {
         int nx = head.getX();
         int ny = head.getY();
-    
+        Coordinate comida = board.getFood().stream()
+                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+                .orElse(null);
         switch (mov) {
             case "up": ny++; break;
             case "down": ny--; break;
@@ -177,16 +179,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                     }
                 }
                 Coordinate h = s.getHead();
-                int dx = Math.abs(nx - h.getX());
-                int dy = Math.abs(ny - h.getY());
-                Coordinate comida = board.getFood().stream()
-                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
-                .orElse(null);
-                if (dx <= 1 && dy <= 1) {
-                    int distMinha = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
-                    int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
+                int distHorizontalMinha = comida != null ? Math.abs(comida.getX() - nx) : Integer.MAX_VALUE;
+                int distHorizontalInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) : Integer.MAX_VALUE;
+                int distVerticalMinha = comida != null ? Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
+                int distVerticalInimigo = comida != null ? Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
 
-                    if (distMinha >= distInimigo) return false;
+                if (Math.max(Math.abs(nx - h.getX()), Math.abs(ny - h.getY())) <= 1 &&
+                    (distHorizontalMinha >= distHorizontalInimigo || distVerticalMinha >= distVerticalInimigo)) {
+                    return false;
                 }
             }
         }
@@ -195,7 +195,9 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         BiPredicate<String, Coordinate> valido2 = (mov, head) -> {
         int nx = head.getX();
         int ny = head.getY();
-    
+        Coordinate comida = board.getFood().stream()
+                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+                .orElse(null);
         switch (mov) {
             case "up": ny++; break;
             case "down": ny--; break;
@@ -218,16 +220,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                     }
                 }
                 Coordinate h = s.getHead();
-                Coordinate comida = board.getFood().stream()
-                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
-                .orElse(null);
+                
                 int distHorizontalMinha = comida != null ? Math.abs(comida.getX() - nx) : Integer.MAX_VALUE;
                 int distHorizontalInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) : Integer.MAX_VALUE;
-
                 int distVerticalMinha = comida != null ? Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
                 int distVerticalInimigo = comida != null ? Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
 
-                if (nx == h.getX() && ny == h.getY() && (distHorizontalMinha >= distHorizontalInimigo || distVerticalMinha >= distVerticalInimigo)) {
+                if (Math.max(Math.abs(nx - h.getX()), Math.abs(ny - h.getY())) <= 0 &&
+                    (distHorizontalMinha >= distHorizontalInimigo || distVerticalMinha >= distVerticalInimigo)) {
                     return false;
                 }
             }
