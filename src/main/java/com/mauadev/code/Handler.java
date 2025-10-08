@@ -168,7 +168,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         for (Coordinate c : corpo) {
             int dx = Math.abs(nx - c.getX());
             int dy = Math.abs(ny - c.getY());
-            if (dx <= 1 && dy <= 1){
+            if (dx <= 0 && dy <= 0){
                 return false;
             }
         }
@@ -177,14 +177,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             for (Coordinate c : s.getBody()) {
                 int dx = Math.abs(nx - c.getX());
                 int dy = Math.abs(ny - c.getY());
-                if (dx <= 2 && dy <= 2){
+                if (dx <= 1 && dy <= 1){
                     return false;
                 }
             }
             Coordinate headInimigo = s.getHead();
             int dx = Math.abs(nx - headInimigo.getX());
             int dy = Math.abs(ny - headInimigo.getY());
-            if (dx <= 2 && dy <= 2){
+            if (dx <= 1 && dy <= 1){
                 return false;
             }
         }
