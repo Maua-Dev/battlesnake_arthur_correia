@@ -174,20 +174,32 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         }
         for (Snake s : board.getSnakes()) {
             if (!s.getId().equals(you.getId())) {
-            for (Coordinate c : s.getBody()) {
-                int dx = Math.abs(nx - c.getX());
-                int dy = Math.abs(ny - c.getY());
-                if (dx <= 0 && dy <= 0){
+                for (Coordinate c : s.getBody()) {
+                    int dx = Math.abs(nx - c.getX());
+                    int dy = Math.abs(ny - c.getY());
+                    if (dx <= 0 && dy <= 0){
+                        return false;
+                    }
+                }
+                Coordinate headInimigo = s.getHead();
+                int dx = Math.abs(nx - headInimigo.getX());
+                int dy = Math.abs(ny - headInimigo.getY());
+                if (dx <= 1 && dy <= 1){
                     return false;
                 }
             }
-            Coordinate headInimigo = s.getHead();
-            int dx = Math.abs(nx - headInimigo.getX());
-            int dy = Math.abs(ny - headInimigo.getY());
-            if (dx <= 1 && dy <= 1){
-                return true;
-            }
         }
+        return true;
+        };
+        BiPredicate<String, Coordinate> valido2 = (mov, head) -> {
+        int nx = head.getX();
+        int ny = head.getY();
+    
+        switch (mov) {
+            case "up": ny += 1; break;
+            case "down": ny -= 1; break;
+            case "left": nx -= 1; break;
+            case "right": nx += 1; break;
         }
         return true;
         };
@@ -215,9 +227,17 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
         }
+        if (!valido.test(direcao, cabeca)) {
+            for (String m : prioridade) {
+                if (valido2.test(m, cabeca)) {
+                    direcao = m;
+                    break;
+                }
+            }
+        }
         move.put("move", direcao);
         return move;
-}
+    }
 
     /**
      * Chamado no final de cada jogo. Não precisa retornar nada.
