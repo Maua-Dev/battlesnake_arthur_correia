@@ -177,7 +177,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             double dx = nx - h.getX();
             double dy = ny - h.getY();
             if (dx*dx + dy*dy <= 2) {
-                break;
+                return false;
             }
             for (Coordinate c : s.getBody()){
                 if (nx == c.getX() && ny == c.getY()){
