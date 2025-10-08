@@ -227,10 +227,10 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         .orElse(null);
         List<String> prioridade = new ArrayList<>();
         if (comida != null) {
-            if (cabeca.getX() < comida.getX()) prioridade.add("right");
-            if (cabeca.getX() > comida.getX()) prioridade.add("left");
-            if (cabeca.getY() < comida.getY()) prioridade.add("up");
-            if (cabeca.getY() > comida.getY()) prioridade.add("down");
+            if (cabeca.getX() < comida.getX() && valido.test("right", cabeca)) prioridade.add("right");
+            if (cabeca.getX() > comida.getX() && valido.test("left", cabeca)) prioridade.add("left");
+            if (cabeca.getY() < comida.getY() && valido.test("up", cabeca)) prioridade.add("up");
+            if (cabeca.getY() > comida.getY() && valido.test("down", cabeca)) prioridade.add("down");
         }
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
