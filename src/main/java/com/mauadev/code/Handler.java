@@ -184,7 +184,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         };
 
         Coordinate comida = board.getFood().stream()
-        .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+        .max(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
         .orElse(null);
         List<String> prioridade = new ArrayList<>();
         if (cabeca.getX() < comida.getX()){
