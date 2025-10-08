@@ -147,12 +147,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         // Agora que você tem o estado do jogo, pode implementar uma lógica mais inteligente aqui.
         Map<String, String> move = new HashMap<>();
         Coordinate cabeca = you.getHead();
-        Snake inimigo = board.getSnakes().stream()
-        .filter(s -> !s.getId().equals(you.getId()))
-        .min(Comparator.comparingInt(s -> Math.abs(s.getHead().getX() - cabeca.getX())
-        + Math.abs(s.getHead().getY() - cabeca.getY())))
-        .orElse(null);
-
         String direcao = null;
         String[] possiveisMoves = {"up", "down", "left", "right"};
         List<Coordinate> corpo = you.getBody();
@@ -168,23 +162,26 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "right": nx += 1; break;
         }
 
-        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
+        if (nx < 2 || nx >= board.getWidth() - 2 || ny < 2 || ny >= board.getHeight() - 2){
             return false;
         }
-        for (Coordinate c : corpo) if (c.getX() == nx && c.getY() == ny){
-            return false;
-        }
-        if (inimigo != null) {
-        for (Coordinate c : inimigo.getBody()){
-            if (c.getX() == nx && c.getY() == ny){
-                return false;
-            }
-        }
-        int dx = Math.abs(nx - inimigo.getHead().getX());
-        int dy = Math.abs(ny - inimigo.getHead().getY());
-        if (dx + dy <= 1){
+        for (Coordinate c : corpo) {
+        int dx = Math.abs(nx - c.getX());
+        int dy = Math.abs(ny - c.getY());
+        if (dx <= 1 && dy <= 1){
         return false;
         }
+        }
+        for (Snake s : board.getSnakes()) {
+            if (!s.getId().equals(you.getId())) {
+                for (Coordinate c : s.getBody()) {
+                    int dx = Math.abs(nx - c.getX());
+                    int dy = Math.abs(ny - c.getY());
+                    if (dx <= 1 && dy <= 1){
+                        return false;
+                    }
+                }
+            }
         }
         return true;
         };
