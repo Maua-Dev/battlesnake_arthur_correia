@@ -11,6 +11,7 @@ import com.mauadev.code.entities.GameState;
 import com.mauadev.code.entities.Snake;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -164,24 +165,23 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
-        for (Coordinate c : corpo) {
+        for (Coordinate c : corpo){
             if (nx == c.getX() && ny == c.getY()){
                 return false;
             }
         }
         for (Snake s : board.getSnakes()) {
-            if (!s.getId().equals(you.getId())) {
-                for (Coordinate c : s.getBody()) {
-                    if (nx == c.getX() && ny == c.getY()){
-                        return false;
-                    }
-                }
-                Coordinate h = s.getHead();
-                int dx = Math.abs(nx - h.getX());
-                int dy = Math.abs(ny - h.getY());
-                if (dx*dy <= 2){
+            if (s.getId().equals(you.getId())){
+                continue;
+            }
+            for (Coordinate c : s.getBody()){
+                if (nx == c.getX() && ny == c.getY()){
                     return false;
                 }
+            }
+            Coordinate h = s.getHead();
+            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
+                return false;
             }
         }
         return true;
@@ -196,62 +196,27 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "left": nx--; break;
             case "right": nx++; break;
         }
+
         if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
             return false;
         }
-        for (Coordinate c : corpo) {
+        for (Coordinate c : corpo){
             if (nx == c.getX() && ny == c.getY()){
                 return false;
             }
         }
         for (Snake s : board.getSnakes()) {
-            if (!s.getId().equals(you.getId())) {
-                for (Coordinate c : s.getBody()) {
-                    if (nx == c.getX() && ny == c.getY()){
-                        return false;
-                    }
-                }
-                Coordinate h = s.getHead();
-                int dx = Math.abs(nx - h.getX());
-                int dy = Math.abs(ny - h.getY());
-                if (dx*dy <= 1){
+            if (s.getId().equals(you.getId())){
+                continue;
+            }
+            for (Coordinate c : s.getBody()){
+                if (nx == c.getX() && ny == c.getY()){
                     return false;
                 }
             }
-        }
-        return true;
-        };
-        BiPredicate<String, Coordinate> valido3 = (mov, head) -> {
-        int nx = head.getX();
-        int ny = head.getY();
-    
-        switch (mov) {
-            case "up": ny++; break;
-            case "down": ny--; break;
-            case "left": nx--; break;
-            case "right": nx++; break;
-        }
-        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
-            return false;
-        }
-        for (Coordinate c : corpo) {
-            if (nx == c.getX() && ny == c.getY()){
+            Coordinate h = s.getHead();
+            if (Math.abs(nx - h.getX()) <= 1 && Math.abs(ny - h.getY()) <= 1){
                 return false;
-            }
-        }
-        for (Snake s : board.getSnakes()) {
-            if (!s.getId().equals(you.getId())) {
-                for (Coordinate c : s.getBody()) {
-                    if (nx == c.getX() && ny == c.getY()){
-                        return false;
-                    }
-                }
-                Coordinate h = s.getHead();
-                int dx = Math.abs(nx - h.getX());
-                int dy = Math.abs(ny - h.getY());
-                if (dx*dy <= 0){
-                    return false;
-                }
             }
         }
         return true;
@@ -260,17 +225,13 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
         .orElse(null);
         List<String> prioridade = new ArrayList<>();
-        List<String> semprioridade = new ArrayList<>();
-        semprioridade.add("up");
-        semprioridade.add("down");
-        semprioridade.add("left");
-        semprioridade.add("right");
         if (comida != null) {
             if (cabeca.getX() < comida.getX()) prioridade.add("right");
             if (cabeca.getX() > comida.getX()) prioridade.add("left");
             if (cabeca.getY() < comida.getY()) prioridade.add("up");
             if (cabeca.getY() > comida.getY()) prioridade.add("down");
         }
+        prioridade.addAll(Arrays.asList("up","down","left","right"));
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
                 direcao = m;
@@ -280,38 +241,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         if (direcao == null) {
             for (String m : prioridade) {
                 if (valido2.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
-        if (direcao == null) {
-            for (String m : prioridade) {
-                if (valido3.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
-        if (direcao == null) {
-            for (String m : semprioridade) {
-                if (valido.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-            }
-        }
-        if (direcao == null) {
-            for (String m : semprioridade) {
-                if (valido2.test(m, cabeca)) {
-                    direcao = m;
-                    break;
-                }
-        }
-        }
-        if (direcao == null) {
-            for (String m : semprioridade) {
-                if (valido3.test(m, cabeca)) {
                     direcao = m;
                     break;
                 }
