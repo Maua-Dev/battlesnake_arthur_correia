@@ -149,7 +149,7 @@ public class HandlerTest {
 
         // Aqui você verifica se o seu algorítmo está realizando o movimento certo, alinhado com a lógica implementada.
         // Nesse caso, a lógica será sempre up pois a configuração em Handler.java está fixa.
-        assertEquals("left", "left", "O movimento esperado era 'left' em direção à comida");
+        assertEquals("left", "left");
     }
 
 

@@ -146,16 +146,12 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         // Lógica do movimento (exemplo simples)
         // Agora que você tem o estado do jogo, pode implementar uma lógica mais inteligente aqui.
         Map<String, String> move = new HashMap<>();
-        List<Snake> snakes = board.getSnakes();
         Coordinate cabeca = you.getHead();
         Snake inimigo = board.getSnakes().stream()
         .filter(s -> !s.getId().equals(you.getId()))
         .min(Comparator.comparingInt(s -> Math.abs(s.getHead().getX() - cabeca.getX())
         + Math.abs(s.getHead().getY() - cabeca.getY())))
         .orElse(null);
-        if (snakes == null){
-            snakes = Collections.emptyList();
-        }
 
         String direcao = null;
         String[] possiveisMoves = {"up", "down", "left", "right"};
@@ -184,20 +180,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         };
 
         Coordinate comida = board.getFood().stream()
-        .max(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+        .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
         .orElse(null);
         List<String> prioridade = new ArrayList<>();
-        if (cabeca.getX() < comida.getX()){
-            prioridade.add("right");
-        }
-        if (cabeca.getX() > comida.getX()){
-            prioridade.add("left");
-        }
-        if (cabeca.getY() < comida.getY()){
-            prioridade.add("up");
-        }
-        if (cabeca.getY() > comida.getY()){
-            prioridade.add("down");
+        if (comida != null) {
+            if (cabeca.getX() < comida.getX()) prioridade.add("right");
+            if (cabeca.getX() > comida.getX()) prioridade.add("left");
+            if (cabeca.getY() < comida.getY()) prioridade.add("up");
+            if (cabeca.getY() > comida.getY()) prioridade.add("down");
         }
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
@@ -214,7 +204,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             }
         }
         move.put("move", direcao);
-        move.put("shout", "Movimento seguro na distancia do inimigo + anticolisão + comida_próxima");
         return move;
 }
 
