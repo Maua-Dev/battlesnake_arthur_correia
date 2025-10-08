@@ -179,7 +179,13 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 Coordinate h = s.getHead();
                 int dx = Math.abs(nx - h.getX());
                 int dy = Math.abs(ny - h.getY());
-                if (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0)){
+                Coordinate comida = board.getFood().stream()
+                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+                .orElse(null);
+                int distMinhaCabeça = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
+                int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
+
+                if (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0) && distMinhaCabeça >= distInimigo) {
                     return false;
                 }
             }
@@ -208,6 +214,17 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             if (!s.getId().equals(you.getId())) {
                 for (Coordinate c : s.getBody()) {
                     if (nx == c.getX() && ny == c.getY()){
+                        return false;
+                    }
+                }
+                Coordinate h = s.getHead();
+                Coordinate comida = board.getFood().stream()
+                .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
+                .orElse(null);
+                if (nx == h.getX() && ny == h.getY()) {
+                    int distMinhaCabeça = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
+                    int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
+                    if (distMinhaCabeça >= distInimigo){
                         return false;
                     }
                 }
