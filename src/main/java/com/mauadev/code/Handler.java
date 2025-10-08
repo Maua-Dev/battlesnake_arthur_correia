@@ -238,11 +238,21 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 break;
             }
         }
-        for (String m : prioridade) {
+        if (direcao == null) {
+            for (String m : List.of("up", "down", "left", "right")) {
+            if (valido.test(m, cabeca)) {
+                direcao = m;
+                break;
+            }
+        }
+        }
+        if (direcao == null) {
+            for (String m : List.of("up", "down", "left", "right")) {
             if (valido2.test(m, cabeca)) {
                 direcao = m;
                 break;
             }
+        }
         }
         if (direcao == null) {
             direcao = "left";
