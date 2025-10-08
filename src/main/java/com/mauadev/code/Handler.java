@@ -200,6 +200,16 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             case "left": nx -= 1; break;
             case "right": nx += 1; break;
         }
+        if (nx < 0 || nx >= board.getWidth() || ny < 0 || ny >= board.getHeight()){
+            return false;
+        }
+        for (Coordinate c : corpo) {
+            int dx = Math.abs(nx - c.getX());
+            int dy = Math.abs(ny - c.getY());
+            if (dx <= 0 && dy <= 0){
+                return false;
+            }
+        }
         for (Snake s : board.getSnakes()) {
             if (!s.getId().equals(you.getId())) {
                 for (Coordinate c : s.getBody()) {
