@@ -182,11 +182,11 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 Coordinate comida = board.getFood().stream()
                 .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
                 .orElse(null);
-                int distMinhaCabeça = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
-                int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
+                if (dx <= 1 && dy <= 1) {
+                    int distMinha = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
+                    int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
 
-                if (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0) && distMinhaCabeça >= distInimigo) {
-                    return false;
+                    if (distMinha >= distInimigo) return false;
                 }
             }
         }
@@ -221,12 +221,14 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 Coordinate comida = board.getFood().stream()
                 .min(Comparator.comparingInt(f -> Math.abs(f.getX() - cabeca.getX()) + Math.abs(f.getY() - cabeca.getY())))
                 .orElse(null);
-                if (nx == h.getX() && ny == h.getY()) {
-                    int distMinhaCabeça = comida != null ? Math.abs(comida.getX() - nx) + Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
-                    int distInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) + Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
-                    if (distMinhaCabeça >= distInimigo){
-                        return false;
-                    }
+                int distHorizontalMinha = comida != null ? Math.abs(comida.getX() - nx) : Integer.MAX_VALUE;
+                int distHorizontalInimigo = comida != null ? Math.abs(comida.getX() - h.getX()) : Integer.MAX_VALUE;
+
+                int distVerticalMinha = comida != null ? Math.abs(comida.getY() - ny) : Integer.MAX_VALUE;
+                int distVerticalInimigo = comida != null ? Math.abs(comida.getY() - h.getY()) : Integer.MAX_VALUE;
+
+                if (nx == h.getX() && ny == h.getY() && (distHorizontalMinha >= distHorizontalInimigo || distVerticalMinha >= distVerticalInimigo)) {
+                    return false;
                 }
             }
         }
