@@ -232,12 +232,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
             if (cabeca.getX() > comida.getX()) prioridade.add("left");
             if (cabeca.getY() < comida.getY()) prioridade.add("up");
         }
-        if (comida != null) {
-            if (cabeca.getY() > comida.getY()) semprioridade.add("up");
-            if (cabeca.getX() < comida.getX()) semprioridade.add("left");
-            if (cabeca.getX() > comida.getX()) semprioridade.add("right");
-            if (cabeca.getY() < comida.getY()) semprioridade.add("down");
-        }
+        semprioridade.addAll(Arrays.asList("up","down","right","left"));
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
                 direcao = m;
@@ -258,11 +253,6 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                     direcao = m;
                     break;
                 }
-            }
-        }
-        if (direcao == null){
-            for (String m : semprioridade) {
-                direcao = m;
             }
         }
         move.put("move", direcao);
