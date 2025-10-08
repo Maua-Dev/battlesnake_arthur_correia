@@ -215,7 +215,7 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
                 }
             }
             Coordinate h = s.getHead();
-            if (Math.abs(nx - h.getX()) <= 0 && Math.abs(ny - h.getY()) <= 0){
+            if (nx == h.getX() && ny == h.getY()){
                 return false;
             }
         }
@@ -227,14 +227,25 @@ public class Handler implements RequestHandler<APIGatewayProxyRequestEvent, APIG
         List<String> prioridade = new ArrayList<>();
         List<String> semprioridade = new ArrayList<>();
         if (comida != null) {
-            if (cabeca.getY() > comida.getY()) prioridade.add("down");
-            if (cabeca.getY() > comida.getY()) semprioridade.add("up");
-            if (cabeca.getX() < comida.getX()) prioridade.add("right");
-            if (cabeca.getX() < comida.getX()) semprioridade.add("left");
-            if (cabeca.getX() > comida.getX()) prioridade.add("left");
-            if (cabeca.getX() > comida.getX()) semprioridade.add("right");
-            if (cabeca.getY() < comida.getY()) prioridade.add("up");
-            if (cabeca.getY() < comida.getY()) prioridade.add("down");
+            int distAtual = Math.abs(cabeca.getX() - comida.getX()) + Math.abs(cabeca.getY() - comida.getY());
+
+            Map<String, Coordinate> futuros = new HashMap<>();
+            futuros.put("up", new Coordinate(cabeca.getX(), cabeca.getY() + 1));
+            futuros.put("down", new Coordinate(cabeca.getX(), cabeca.getY() - 1));
+            futuros.put("left", new Coordinate(cabeca.getX() - 1, cabeca.getY()));
+            futuros.put("right", new Coordinate(cabeca.getX() + 1, cabeca.getY()));
+
+            for (Map.Entry<String, Coordinate> entry : futuros.entrySet()) {
+                String k = entry.getKey();
+                Coordinate futuro = entry.getValue();
+                int distFut = Math.abs(futuro.getX() - comida.getX()) + Math.abs(futuro.getY() - comida.getY());
+
+                if (distFut < distAtual) {
+                    prioridade.add(k);
+                } else if (distFut > distAtual) {
+                    semprioridade.add(k);
+                }
+            }
         }
         for (String m : prioridade) {
             if (valido.test(m, cabeca)) {
